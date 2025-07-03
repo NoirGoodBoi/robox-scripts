@@ -1,0 +1,44 @@
+local p = game.Players.LocalPlayer local rs = game:GetService("RunService") local UIS = game:GetService("UserInputService")
+
+local gui = Instance.new("ScreenGui", game.CoreGui) gui.Name = "NoirGUI"
+
+-- Menu button local menuBtn = Instance.new("TextButton", gui) menuBtn.Size = UDim2.new(0, 50, 0, 50) menuBtn.Position = UDim2.new(1, -60, 1, -120) menuBtn.Text = "⚙️" menuBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30) menuBtn.TextColor3 = Color3.new(1,1,1) menuBtn.TextSize = 26 menuBtn.BorderSizePixel = 0 Instance.new("UICorner", menuBtn).CornerRadius = UDim.new(0, 10)
+
+-- Panel local panel = Instance.new("Frame", gui) panel.Size = UDim2.new(0, 200, 0, 150) panel.Position = UDim2.new(1, -210, 1, -210) panel.BackgroundColor3 = Color3.fromRGB(20,20,20) panel.Visible = false panel.BorderSizePixel = 0 Instance.new("UICorner", panel).CornerRadius = UDim.new(0, 8)
+
+menuBtn.MouseButton1Click:Connect(function() panel.Visible = not panel.Visible end)
+
+-- Noclip button local noclipBtn = Instance.new("TextButton", panel) noclipBtn.Size = UDim2.new(1, -20, 0, 40) noclipBtn.Position = UDim2.new(0, 10, 0, 10) noclipBtn.Text = "Noclip: OFF" noclipBtn.BackgroundColor3 = Color3.fromRGB(50,50,50) noclipBtn.TextColor3 = Color3.new(1,1,1) noclipBtn.TextSize = 18 Instance.new("UICorner", noclipBtn).CornerRadius = UDim.new(0, 6)
+
+-- Invisible button local invisBtn = Instance.new("TextButton", panel) invisBtn.Size = UDim2.new(1, -20, 0, 40) invisBtn.Position = UDim2.new(0, 10, 0, 60) invisBtn.Text = "Invisible: OFF" invisBtn.BackgroundColor3 = Color3.fromRGB(50,50,50) invisBtn.TextColor3 = Color3.new(1,1,1) invisBtn.TextSize = 18 Instance.new("UICorner", invisBtn).CornerRadius = UDim.new(0, 6)
+
+-- Noclip logic local noclip = false local noclipParts = {}
+
+noclipBtn.MouseButton1Click:Connect(function() noclip = not noclip noclipBtn.Text = noclip and "Noclip: ON" or "Noclip: OFF" if not noclip then for _, part in pairs(noclipParts) do if part and part:IsA("BasePart") then part.CanCollide = true end end end end)
+
+rs.Stepped:Connect(function() if noclip and p.Character then noclipParts = {} for _, part in pairs(p.Character:GetDescendants()) do if part:IsA("BasePart") and part.CanCollide then part.CanCollide = false table.insert(noclipParts, part) end end end end)
+
+-- Spawn protection local spawnPos = Vector3.new(0, 10, 0) rs.Heartbeat:Connect(function() local hrp = p.Character and p.Character:FindFirstChild("HumanoidRootPart") if hrp and hrp.Position.Y < -50 then hrP.CFrame = CFrame.new(spawnPos + Vector3.new(0, math.random(2,4), 0)) end end)
+
+-- Invisible logic local invisible = false local originalSizes = {}
+
+invisBtn.MouseButton1Click:Connect(function() invisible = not invisible invisBtn.Text = invisible and "Invisible: ON" or "Invisible: OFF" local char = p.Character if char then for _, part in pairs(char:GetDescendants()) do if part:IsA("BasePart") then if invisible then originalSizes[part] = part.Size part.Transparency = 1 part.CanCollide = false part.Size = Vector3.new(0, 0, 0) else part.Transparency = 0 part.CanCollide = true if originalSizes[part] then part.Size = originalSizes[part] end end elseif part:IsA("Decal") then part.Transparency = invisible and 1 or 0 elseif part:IsA("ParticleEmitter") or part:IsA("Trail") then part.Enabled = not invisible end end end end)
+
+-- Fly system local flyFrame = Instance.new("Frame", gui) flyFrame.Size = UDim2.new(0, 160, 0, 100) flyFrame.Position = UDim2.new(1, -180, 1, -260) flyFrame.BackgroundColor3 = Color3.fromRGB(20,20,20) flyFrame.BorderSizePixel = 0 Instance.new("UICorner", flyFrame).CornerRadius = UDim.new(0, 10)
+
+local flyBtn = Instance.new("TextButton", flyFrame) flyBtn.Size = UDim2.new(0, 140, 0, 30) flyBtn.Position = UDim2.new(0, 10, 0, 10) flyBtn.Text = "Fly: OFF" flyBtn.BackgroundColor3 = Color3.fromRGB(40,40,40) flyBtn.TextColor3 = Color3.new(1,1,1) Instance.new("UICorner", flyBtn).CornerRadius = UDim.new(0, 6)
+
+local minusBtn = Instance.new("TextButton", flyFrame) minusBtn.Size = UDim2.new(0, 60, 0, 25) minusBtn.Position = UDim2.new(0, 10, 0, 50) minusBtn.Text = "- Speed" minusBtn.BackgroundColor3 = Color3.fromRGB(50,50,50) minusBtn.TextColor3 = Color3.new(1,1,1) Instance.new("UICorner", minusBtn).CornerRadius = UDim.new(0, 6)
+
+local plusBtn = Instance.new("TextButton", flyFrame) plusBtn.Size = UDim2.new(0, 60, 0, 25) plusBtn.Position = UDim2.new(0, 90, 0, 50) plusBtn.Text = "+ Speed" plusBtn.BackgroundColor3 = Color3.fromRGB(50,50,50) plusBtn.TextColor3 = Color3.new(1,1,1) Instance.new("UICorner", plusBtn).CornerRadius = UDim.new(0, 6)
+
+local flying = false local speed = 2 local hrp = p.Character and p.Character:WaitForChild("HumanoidRootPart")
+
+flyBtn.MouseButton1Click:Connect(function() flying = not flying flyBtn.Text = flying and "Fly: ON" or "Fly: OFF" if not flying and hrp then hrp.AssemblyLinearVelocity = Vector3.zero end end)
+
+plusBtn.MouseButton1Click:Connect(function() speed += 1 end)
+
+minusBtn.MouseButton1Click:Connect(function() speed = math.max(1, speed - 1) end)
+
+rs.RenderStepped:Connect(function() if flying and hrp then local move = Vector3.zero if UIS:IsKeyDown(Enum.KeyCode.W) then move += workspace.CurrentCamera.CFrame.LookVector end if UIS:IsKeyDown(Enum.KeyCode.S) then move -= workspace.CurrentCamera.CFrame.LookVector end if UIS:IsKeyDown(Enum.KeyCode.A) then move -= workspace.CurrentCamera.CFrame.RightVector end if UIS:IsKeyDown(Enum.KeyCode.D) then move += workspace.CurrentCamera.CFrame.RightVector end if UIS:IsKeyDown(Enum.KeyCode.Space) then move += Vector3.new(0,1,0) end if UIS:IsKeyDown(Enum.KeyCode.LeftControl) then move -= Vector3.new(0,1,0) end move = move.Unit * speed if move ~= move then move = Vector3.zero end hrp.Velocity = move * 10 end end)
+
