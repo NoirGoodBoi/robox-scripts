@@ -5,11 +5,12 @@ gui.Name = "NoirGUI"
 
 local menuBtn = Instance.new("TextButton", gui)
 menuBtn.Size = UDim2.new(0, 50, 0, 50)
-menuBtn.Position = UDim2.new(1, -60, 1, -60)
+menuBtn.Position = UDim2.new(1, -60, 0, 10)
 menuBtn.Text = "⚙️"
-menuBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+menuBtn.BackgroundTransparency = 1
 menuBtn.TextColor3 = Color3.new(1,1,1)
 menuBtn.TextSize = 26
+menuBtn.Font = Enum.Font.GothamBlack
 
 local panel = Instance.new("Frame", gui)
 panel.Size = UDim2.new(0, 200, 0, 150)
@@ -29,6 +30,7 @@ noclipBtn.Text = "Noclip: OFF"
 noclipBtn.BackgroundColor3 = Color3.fromRGB(50,50,50)
 noclipBtn.TextColor3 = Color3.new(1,1,1)
 noclipBtn.TextSize = 18
+noclipBtn.Font = Enum.Font.GothamSemibold
 Instance.new("UICorner", noclipBtn).CornerRadius = UDim.new(0, 6)
 
 local invisBtn = Instance.new("TextButton", panel)
@@ -38,6 +40,7 @@ invisBtn.Text = "Invisible: OFF"
 invisBtn.BackgroundColor3 = Color3.fromRGB(50,50,50)
 invisBtn.TextColor3 = Color3.new(1,1,1)
 invisBtn.TextSize = 18
+invisBtn.Font = Enum.Font.GothamSemibold
 Instance.new("UICorner", invisBtn).CornerRadius = UDim.new(0, 6)
 
 local noclip = false
